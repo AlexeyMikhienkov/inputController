@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Контроллер</title>
+    <style>
+        .element {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            top: 500px;
+            left: 500px;
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <input class="button" type="button" value="attach">
+        <input class="button" type="button" value="detach">
+        <input class="button" type="button" value="enableAction">
+        <input class="button" type="button" value="disableAction">
+
+        <div class="element"></div>
+    </div>
+
+    <script src="inputControllerTest.js"></script>
+    <script src="inputController.js"></script>
+</body>
+</html>
+
+
+<!-- аттач к элементу DOM - метод attach
+детач от элемента DOM - метод detach
+активация контроллера - enableAction
+деактивация контроллера - disableAction
+байнд доп. активности “прыжок” на кнопку “пробел”
+-->
