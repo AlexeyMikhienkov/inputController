@@ -1,62 +1,29 @@
-let actions = {
+const actions = {
     "left": {
         keyCodes: [37, 65],
-     //   enabledAction: false
+     //   enabled: false
     },
     "right": {
         keyCodes: [39, 68],
-     //   enabledAction: false
+     //   enabled: false
     },
     "up": {
         keyCodes: [38, 87],
-      //  enabledAction: false
+      //  enabled: false
     },
     "down": {
         keyCodes: [40, 83],
-     //   enabledAction: false
+     //   enabled: false
     }
 };
 
 const target = document.querySelector(".element");
-const controller = new inputController(actions, target);
+const controller = new InputController(actions, target);
 
-document.addEventListener("keydown", handleKeyDown);
-
-function handleKeyDown(e) {
-    if (!controller.enabled) {
-        alert("Контроллер отключен. Для обработки нажатия сначала включите контроллер");
-    } else {
-        const code = e.keyCode;
-        for (const action of controller.actions) {
-            const keyCodes = action.keyCodes;
-            if (keyCodes.includes(code)) {
-                controller.enableAction(action);
-            } else {
-                alert("Нет действия для данной клавиши");
-            }
-        }
-    }
-}
-
-document.addEventListener("keyup", handleKeyUp);
-
-function handleKeyUp(e) {
-    if (!controller.enabled) {
-        alert("Контроллер отключен. Для обработки нажатия сначала включите контроллер");
-    } else {
-        const code = e.keyCode;
-        for (const action of controller.actions) {
-            const keyCodes = action.keyCodes;
-            if (keyCodes.includes(code)) {
-                controller.disableAction(action);
-            } else {
-                alert("Нет действия для данной клавиши");
-            }
-        }
-    }
-
-
-}
+document.getElementById("attach").onclick = controller.attach(target);
+document.getElementById("detach").onclick = controller.detach();
+document.getElementById("enableAction").onclick = controller.enableAction("left");
+document.getElementById("disableAction").onclick = controller.disableAction("left");
 
 document.addEventListener("input-controller:activate", move);
 
@@ -88,35 +55,7 @@ function createNewEventKeyDown(e) {
     document.dispatchEvent(eventActivate);
 }
 
-
-
-document.addEventListener("keydown", createNewEventKeyUp);
-
-function createNewEventKeyUp() {
-    const eventDeactivate = new CustomEvent("input-controller:deactivate", {
-        detail: {
-        }
-    });
-    document.dispatchEvent(eventDeactivate);
-}
-
-function deactivateController() {
-
-}
-
 document.addEventListener("input-controller:deactivate", deactivateController);
-
-/*
-document.addEventListener("keydown", createNewEventKeyDown);
-
-function createNewEventKeyDown(e) {
-    const event = new CustomEvent("input-controller:activate", {
-        detail: {
-            action: e.keyCode === 37 ? "left" : "right"
-        }
-    });
-    document.dispatchEvent(event);
-}
 
 let position = 0;
 
