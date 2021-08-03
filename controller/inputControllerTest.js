@@ -78,7 +78,7 @@ function move(direction) {
 
 document.addEventListener("input-controller:activate", ({detail:{action}}) => {
     move(Number(action === "right") * 2 - 1);
- */
+
 function createNewEventKeyDown(e) {
     const eventActivate = new CustomEvent("input-controller:activate", {
         detail: {
@@ -89,8 +89,6 @@ function createNewEventKeyDown(e) {
 }
 
 
-
-document.addEventListener("input-controller:activate", activateController);
 
 document.addEventListener("keydown", createNewEventKeyUp);
 
