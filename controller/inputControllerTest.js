@@ -1,24 +1,24 @@
 let actions = {
     "left": {
         keyCodes: [37, 65],
-        enabledAction: false
+     //   enabledAction: false
     },
     "right": {
         keyCodes: [39, 68],
-        enabledAction: false
+     //   enabledAction: false
     },
     "up": {
         keyCodes: [38, 87],
-        enabledAction: false
+      //  enabledAction: false
     },
     "down": {
         keyCodes: [40, 83],
-        enabledAction: false
+     //   enabledAction: false
     }
 };
 
 const target = document.querySelector(".element");
-const controller = inputController(actions, target);
+const controller = new inputController(actions, target);
 
 document.addEventListener("keydown", handleKeyDown);
 
