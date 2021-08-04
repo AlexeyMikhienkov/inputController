@@ -17,11 +17,19 @@ const actions = {
     }
 };
 
+const jump = {
+    "space": {
+        keyCodes: [32]
+    }
+};
+
 let posX = 0;
 let posY = 0;
 const step = 20;
+const colors = ["red", "green", "blue"];
+let index = 0;
 
-const target = document.querySelector(".element");
+const target = document.getElementById("element");
 const controller = new InputController(actions, target);
 
 const attach = document.getElementById("attach");
@@ -44,6 +52,11 @@ disableAction.onclick = function() {
     controller.disableAction("left");
 };
 
+const bindJump = document.getElementById("bindJump");
+bindJump.onclick = function() {
+    controller.bindActions(jump);
+};
+
 document.addEventListener("input-controller:action-activated", ({detail:{action}}) => {
     move(action);
 });
@@ -54,7 +67,6 @@ function deactivate() {
 }
 
 function move(key) {
-
     if (key === "left") {
         posX -= step;
     } else if (key === "right") {
@@ -63,40 +75,16 @@ function move(key) {
         posY -= step;
     } else if (key === "down") {
         posY += step;
+    } else if (key === "space") {
+
+        index = colors.indexOf(target.style.backgroundColor);
+        target.style.backgroundColor = colors[(index + 1) % colors.length];
     }
 
     target.style.transform = `translate(${posX}px, ${posY}px)`;
 }
 
-
-/*
-let position = 0;
-
-function move(direction) {
-    position += direction * 500;
-    element.style.transform = `translate(${position}px)`;
-}
-
-document.addEventListener("input-controller:activate", ({detail:{action}}) => {
-    move(Number(action === "right") * 2 - 1);
-
-function createNewEventKeyDown(e) {
-    const eventActivate = new CustomEvent("input-controller:activate", {
-        detail: {
-            keyCode: e.keyCode
-        }
-    });
-    document.dispatchEvent(eventActivate);
-}
-
-let position = 0;
-
-function move(direction) {
-    position += direction * 500;
-    element.style.transform = `translate(${position}px)`;
-}
-
-document.addEventListener("input-controller:activate", ({detail:{action}}) => {
-    move(Number(action === "right") * 2 - 1);
-});
-*/
+//TODO: Пофиксить параметр focused в зависимости от фокуса экрана
+// Пофиксить курсор на кнопке bind action после нажатия
+// как работает isActionActive - итеративный опрос
+// Плагин ?

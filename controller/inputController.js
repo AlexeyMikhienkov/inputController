@@ -21,15 +21,23 @@ class InputController {
     };
 
     bindActions(actionsToBind) {
-
+        if (this.enabled && this.focused) {
+            Object.entries(actionsToBind).forEach(([key, value]) => {
+                if (!Object.keys(this.actions).includes(key)) {
+                    value["enabled"] = true;
+                    this.actions[key] = value;
+                } else {
+                    console.log("Эта активность уже существует");
+                }
+            });
+        } else {
+            console.log("Не подключен контроллер или нет фокуса");
+        }
     };
 
     enableAction(actionName) {
         //TODO: Обработать и протестировать enable action leftArrow
         // по нажатию на кнопку у "left" (actionName) поставить свойство enabled: true
-
-        //console.log("enabled: ", this.enabled);
-        //console.log("focused: ", this.focused);
 
         if (this.enabled && this.focused) {
             Object.entries(this.actions).forEach(([key, value]) => {
@@ -47,9 +55,6 @@ class InputController {
     disableAction(actionName) {
         //TODO: Обработать и протестировать disable action leftArrow
         // по нажатию на кнопку у "left" (actionName) появляется свойство enabled: false
-
-        console.log("enabled: ", this.enabled);
-        console.log("focused: ", this);
 
         if (this.enabled && this.focused) {
             Object.entries(this.actions).forEach(([key, value]) => {
@@ -69,12 +74,17 @@ class InputController {
         if (!dontEnable) {
             this.target = target;
             this.enabled = true;
+
+            document.addEventListener("keyup", this.handleKeyUp);
+            document.addEventListener("keydown", this.handleKeyDown);
         }
-        console.log("Прикреплено к элементу");
     };
 
     detach() {
         // TODO: удалить таргет у элемента и деактивировать контроллер
+        document.removeEventListener("keydown", this.handleKeyDown);
+        document.removeEventListener("keyup", this.handleKeyUp);
+
         this.target = null;
         this.enabled = false;
 

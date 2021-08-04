@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <title>Контроллер</title>
         <style>
-            .element {
+            #element {
                 position: relative;
                 width: 100px;
                 height: 100px;
@@ -20,8 +20,9 @@
             <input id="detach" type="button" value="detach from DOM-element">
             <input id="enableAction" type="button" value="enable action leftArrow">
             <input id="disableAction" type="button" value="disable action leftArrow">
+            <input id="bindJump" type="button" value="bind action 'jump'">
 
-            <div class="element"></div>
+            <div id="element" style="background-color: red"></div>
         </div>
 
         <script src="inputController.js"></script>
