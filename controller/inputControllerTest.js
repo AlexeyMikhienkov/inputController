@@ -1,7 +1,7 @@
 const actions = {
     "left": {
         keyCodes: [37, 65],
-        enabled: false
+       // enabled: false
     },
     "right": {
         keyCodes: [39, 68]
@@ -9,7 +9,7 @@ const actions = {
     },
     "up": {
         keyCodes: [38, 87],
-        enabled: false
+      //  enabled: false
     },
     "down": {
         keyCodes: [40, 83]
@@ -19,6 +19,8 @@ const actions = {
 
 let posX = 0;
 let posY = 0;
+const step = 20;
+
 const target = document.querySelector(".element");
 const controller = new InputController(actions, target);
 
@@ -42,15 +44,28 @@ disableAction.onclick = function() {
     controller.disableAction("left");
 };
 
-document.addEventListener("input-controller:activate", ({details: {action, keyCode}}) => {
-    move(action, Number(action === "right") * 2 - 1, Number(action === "up") * 2 - 1)
+document.addEventListener("input-controller:action-activated", ({detail:{action}}) => {
+    move(action);
 });
 
-function move(key, directionX, directionY) {
-    posX += directionX * 100;
-    posY = directionY * 100;
-    target.style.transform = `translateX(${posX}px)`;
-    target.style.transform = `translateY(${posY}px)`;
+document.addEventListener("input-controller:action-deactivated", deactivate);
+
+function deactivate() {
+}
+
+function move(key) {
+
+    if (key === "left") {
+        posX -= step;
+    } else if (key === "right") {
+        posX += step;
+    } else if (key === "up") {
+        posY -= step;
+    } else if (key === "down") {
+        posY += step;
+    }
+
+    target.style.transform = `translate(${posX}px, ${posY}px)`;
 }
 
 
@@ -73,8 +88,6 @@ function createNewEventKeyDown(e) {
     });
     document.dispatchEvent(eventActivate);
 }
-
-document.addEventListener("input-controller:deactivate", deactivateController);
 
 let position = 0;
 
