@@ -1,37 +1,59 @@
 const actions = {
     "left": {
         keyCodes: [37, 65],
-     //   enabled: false
+        enabled: false
     },
     "right": {
-        keyCodes: [39, 68],
+        keyCodes: [39, 68]
      //   enabled: false
     },
     "up": {
         keyCodes: [38, 87],
-      //  enabled: false
+        enabled: false
     },
     "down": {
-        keyCodes: [40, 83],
+        keyCodes: [40, 83]
      //   enabled: false
     }
 };
 
+let posX = 0;
+let posY = 0;
+
 const target = document.querySelector(".element");
 const controller = new InputController(actions, target);
 
-document.getElementById("attach").onclick = controller.attach(target);
-document.getElementById("detach").onclick = controller.detach();
-document.getElementById("enableAction").onclick = controller.enableAction("left");
-document.getElementById("disableAction").onclick = controller.disableAction("left");
+console.log("actions: ", controller.actions);
 
-document.addEventListener("input-controller:activate", move);
+const attach = document.getElementById("attach");
+attach.onclick = function () {
+    controller.attach(target);
+};
 
-function move(e) {
-    const action = e.action;
-    const x = Number(action === "right") * 2 - 1;
-    const y = Number(action === "up") * 2 - 1;
+const detach = document.getElementById("detach");
+detach.onclick = function () {
+    controller.detach();
+};
 
+const enableAction = document.getElementById("enableAction");
+enableAction.onclick = function () {
+    controller.enableAction("left");
+};
+
+const disableAction = document.getElementById("disableAction");
+disableAction.onclick = function() {
+    controller.disableAction("left");
+};
+
+document.addEventListener("input-controller:activate", ({details: {action, keyCode}}) => {
+    move(action, Number(action === "right") * 2 - 1, Number(action === "up") * 2 - 1)
+});
+
+function move(key, directionX, directionY) {
+    posX += directionX * 100;
+    posY = directionY * 100;
+    target.style.transform = `translateX(${posX}px)`;
+    target.style.transform = `translateY(${posY}px)`;
 }
 
 
