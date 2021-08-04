@@ -19,15 +19,12 @@ const actions = {
 
 let posX = 0;
 let posY = 0;
-
 const target = document.querySelector(".element");
 const controller = new InputController(actions, target);
 
-console.log("actions: ", controller.actions);
-
 const attach = document.getElementById("attach");
 attach.onclick = function () {
-    controller.attach(target);
+    controller.attach(target, false);
 };
 
 const detach = document.getElementById("detach");
