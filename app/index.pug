@@ -1,0 +1,21 @@
+include components/page/page.pug
+include components/mixins/mixins.pug
+include components/content-part-column/content-part-column.pug
+include components/column-item/column-item.pug
+include components/contact/contact.pug
+include components/inner-part/inner-part.pug
+include components/menu-inner/menu-inner.pug
+
++page('')
+  .container
+    button(id="attach" value="attach to DOM-element")
+    button(id="detach" value="detach from DOM-element")
+    button(id="enableAction" value="enable action leftArrow")
+    button(id="disableAction" value="disable action leftArrow")
+    button(id="bindJump" value="bind action 'jump'")
+    #element(style="background-color: red")
+
+  script(src="scripts/inputController.js")
+  script(src="scripts/inputControllerTest.js")
+
+//TODO: Пофиксить пропавшие названия у кнопок
