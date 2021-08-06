@@ -5,8 +5,9 @@ export default class InputController {
   static ACTION_DEACTIVATED = 'input-controller:action-deactivated';
   actions = {};
   target;
-  keydown = [];
+  pressedActions = [];
   isAttached = false;
+  out = false;
 
   constructor(actionsToBind, target) {
     this.listenerKeyDown = document.addEventListener("keydown", this.handleKeyDown);
@@ -98,18 +99,18 @@ export default class InputController {
     }
 
     const [, actionData] = Object.entries(this.actions).find(([key, value]) => (key === action)) || [];
-    console.log("isActionActive", actionData ? actionData.active : false);
     return actionData ? actionData.active : false;
   };
 
   isKeyPressed(keyCode) {
-    return this.keydown.includes(keyCode);
+    return this.pressedActions.includes(keyCode);
   }
 
   handleKeyDown = (e) => {
     const code = e.keyCode;
-    if (!this.keydown.includes(e.keyCode))
-      this.keydown.push(e.keyCode);
+    this.out = false;
+    if (!this.pressedActions.includes(e.keyCode))
+      this.pressedActions.push(e.keyCode);
 
     if (!this.enabled || !this.focused) {
       console.log("Не активирован контроллер или не сфокусировано окно");
@@ -120,21 +121,27 @@ export default class InputController {
       if (value.keyCodes.includes(code)) {
         if (value.enabled && !value.active) {
           value.active = true;
-          console.log("Событие ACTIVATED создано для " + code);
           this.create(key, code, true);
         }
       }
     });
-
   };
+
+  disablePressed(actionName, code) {
+    const index = this.pressedActions.indexOf(code);
+
+    if (index > -1) {
+      this.pressedActions.splice(index, 1);
+    }
+
+    const [, disableValue] = Object.entries(this.actions).find(([key,]) => (key === actionName)) || [];
+    disableValue.active = false;
+    console.log("Действие больше не активно");
+  }
 
   handleKeyUp = (e) => {
     const code = e.keyCode;
-    const index = this.keydown.indexOf(e.keyCode);
-
-    if (index > -1) {
-      this.keydown.splice(index, 1);
-    }
+    this.out = true;
 
     if (!this.enabled || !this.focused) {
       Object.entries(this.actions).forEach(([key, value]) => {
@@ -149,8 +156,6 @@ export default class InputController {
 
     Object.entries(this.actions).forEach(([key, value]) => {
       if (value.keyCodes.includes(code) && value.enabled) {
-        this.actions[key].active = false;
-        console.log("Событие DEACTIVATED создано для " + code);
         this.create(key, code, false);
       }
     });
@@ -164,7 +169,8 @@ export default class InputController {
           keyCode: code
         }
       });
-      document.dispatchEvent(event)
+      document.dispatchEvent(event);
+      console.log("Событие ACTIVATED создано для " + key);
     } else {
       const event = new CustomEvent(InputController.ACTION_DEACTIVATED, {
         detail: {
@@ -172,7 +178,8 @@ export default class InputController {
           keyCode: code
         }
       });
-      document.dispatchEvent(event)
+      document.dispatchEvent(event);
+      console.log("Событие DEACTIVATED создано для " + key);
     }
   }
 }

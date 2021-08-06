@@ -62,11 +62,14 @@ document.addEventListener("input-controller:action-deactivated", deactivated);
 
 function activated(e) {
   const timer = setInterval(() => {
-    console.log(e.detail.keyCode, e.detail.action);
-    if (controller.isKeyPressed(e.detail.keyCode) && controller.isActionActive(e.detail.action)) {
+    console.log("Проверка активности");
+    console.log(controller.isKeyPressed(e.detail.keyCode), controller.isActionActive(e.detail.action));
+    if (controller.isKeyPressed(e.detail.keyCode) && controller.isActionActive(e.detail.action) && !controller.out) {
       console.log("Активно:", controller.isActionActive(e.detail.action));
-
       move(e.detail.action);
+    } else if (controller.pressedActions.includes(e.detail.keyCode)) {
+        controller.disablePressed(e.detail.action, e.detail.keyCode);
+        move(e.detail.action, e.detail.keyCode);
     } else {
       clearInterval(timer);
     }
