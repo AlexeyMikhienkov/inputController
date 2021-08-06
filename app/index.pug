@@ -8,11 +8,11 @@ include components/menu-inner/menu-inner.pug
 
 +page('')
   .container
-    button(id="attach" value="attach to DOM-element")
-    button(id="detach" value="detach from DOM-element")
-    button(id="enableAction" value="enable action leftArrow")
-    button(id="disableAction" value="disable action leftArrow")
-    button(id="bindJump" value="bind action 'jump'")
+    button(id="attach")!="attach to DOM-element"
+    button(id="detach")!="detach from DOM-element"
+    button(id="enableAction")!="enable action leftArrow"
+    button(id="disableAction")!="disable action leftArrow"
+    button(id="bindJump")!="bind action 'jump'"
     #element(style="background-color: red")
 
   script(src="scripts/inputController.js")

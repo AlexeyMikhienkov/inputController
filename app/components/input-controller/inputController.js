@@ -24,8 +24,7 @@ export default class InputController {
     });
   };
 
-  changeFocus() {
-    console.log(this);
+  changeFocus = () => {
     this.focused = !document.hidden;
   };
 
@@ -33,26 +32,30 @@ export default class InputController {
     Object.entries(actionsToBind).forEach(([key, value]) => {
       if (!Object.keys(this.actions).includes(key)) {
         value["enabled"] = true;
+        value["active"] = false;
         this.actions[key] = value;
       } else {
-        //TODO: Возможность добавить кнопки к действию
+        let [, actionValue] =  Object.entries(this.actions).find(([k, v]) => (k === key)) || [];
+        actionValue.keyCodes = actionValue.keyCodes.concat(value.keyCodes);
+        actionValue.keyCodes = actionValue.keyCodes.sort();
       }
     });
   };
 
   enableAction(actionName) {
-    Object.entries(this.actions).forEach(([key,]) => {
-      if (key === actionName && !(this.actions[actionName].enabled)) {
-        this.actions[actionName].enabled = true;
+    Object.entries(this.actions).forEach(([key,value]) => {
+      if (key === actionName && !(value.enabled)) {
+        value.enabled = true;
       }
     });
     console.log("Теперь действие 'Влево' доступно");
   };
 
   disableAction(actionName) {
-    Object.entries(this.actions).forEach(([key,]) => {
-      if (key === actionName && this.actions[actionName].enabled) {
-        this.actions[actionName].enabled = false;
+    Object.entries(this.actions).forEach(([key, value]) => {
+      if (key === actionName && value.enabled) {
+        value.enabled = false;
+        value.active = false;
       }
     });
     console.log("Теперь действие 'Влево' НЕ доступно");
@@ -87,13 +90,12 @@ export default class InputController {
     } else {
       console.log("Уже было откреплено");
     }
-
   };
 
   isActionActive(action) {
-    //TODO: при изменение свойства экшна на enabled:false активность экшна = false
-
     if (!this.enabled) {
+      const [actionKey, actionValue] = Object.entries(this.actions).find(([key, value]) => (key === action)) || [];
+
       console.log("Контроллер отключен");
       return false;
     }
@@ -109,7 +111,7 @@ export default class InputController {
     }
 
     Object.entries(this.actions).forEach(([key, value]) => {
-      if (value.keyCodes.includes(keyCode) && value.enabled) { //TODO: Добавить проверку на нажатие конкретного code из keyCodes
+      if (value.keyCodes.includes(keyCode) && value.enabled && value.active) { //TODO: Добавить проверку на нажатие конкретного code из keyCodes
         res = true;
       }
     });
@@ -120,45 +122,69 @@ export default class InputController {
   handleKeyDown = (e) => {
     const code = e.keyCode;
 
-    if (this.enabled && this.focused) {
-      Object.entries(this.actions).forEach(([key, value]) => {
-        if (value.keyCodes.includes(code)) {
-          if (value.enabled && !value.active) {
-            this.actions[key].active = true;
-            console.log("Событие ACTIVATED создано");
-            const event = new CustomEvent(InputController.ACTION_ACTIVATED, {
-              detail: {
-                action: key,
-                keyCode: code
-              }
-            });
-            document.dispatchEvent(event);
-          }
-        }
-      });
-    } else {
-      console.log("Контроллер не активирован");
+    if (!this.enabled || !this.focused) {
+      console.log("Не активирован контроллер или не сфокусировано окно");
+      return;
     }
+
+    Object.entries(this.actions).forEach(([key, value]) => {
+      //console.log(code, value.keyCodes);
+      if (value.keyCodes.includes(code)) {
+        if (value.enabled && !value.active) {
+          value.active = true;
+          console.log("Событие ACTIVATED создано для " + code);
+          this.create(key, code, true);
+        }
+      } //else {
+        //console.log("Клавиша недоступна" + code);
+      //}
+    });
 
   };
 
   handleKeyUp = (e) => {
-    //TODO: не деактивируется action во время недоступности контроллера
     const code = e.keyCode;
 
-    if (!this.enabled || !this.focused) return;
+    if (!this.enabled || !this.focused) {
+      Object.entries(this.actions).forEach(([key, value]) => {
+        if (value.keyCodes.includes(code) && value.enabled) {
+          value.active = false;
+        }
+      });
+
+      console.log("Не активирован контроллер или не сфокусировано окно");
+      return;
+    }
 
     Object.entries(this.actions).forEach(([key, value]) => {
       if (value.keyCodes.includes(code) && value.enabled) {
         this.actions[key].active = false;
+        console.log("Событие DEACTIVATED создано для " + code);
+        this.create(key, code, false);
       }
     });
 
-    console.log("Событие DEACTIVATED создано");
-    const event = new CustomEvent(InputController.ACTION_DEACTIVATED.ACTION_DEACTIVATED, {}); //TODO: добавить в detail деактивацию конкретного экшена и активацию/деактивацию в отдельную функцию (detail одинаковый)
-    document.dispatchEvent(event);
-
   };
+
+  create(key, code, activated) {
+    if (activated) {
+      const event = new CustomEvent(InputController.ACTION_ACTIVATED, {
+        detail: {
+          action: key,
+          keyCode: code
+        }
+      });
+      document.dispatchEvent(event)
+    } else {
+      const event = new CustomEvent(InputController.ACTION_DEACTIVATED, {
+        detail: {
+          action: key,
+          keyCode: code
+        }
+      });
+      document.dispatchEvent(event)
+    }
+  }
 }
 
 window.InputController = InputController;
