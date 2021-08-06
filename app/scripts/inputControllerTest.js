@@ -57,21 +57,17 @@ bindJump.addEventListener('click', function() {
   controller.bindActions(jump)
 });
 
+
 document.addEventListener("input-controller:action-activated", activated);
 document.addEventListener("input-controller:action-deactivated", deactivated);
 
 function activated(e) {
-  const action = e.detail.action;
-  const code = e.detail.keyCode;
-
   const timer = setInterval(() => {
-    console.log("timer:", timer);
-
-    console.log(code, controller.isKeyPressed(code), controller.isActionActive(action));
-    if (controller.isKeyPressed(code) && controller.isActionActive(action)) {
+    //console.log(code, controller.isKeyPressed(code), controller.isActionActive(action));
+    if (controller.isKeyPressed(e.detail.action) && controller.isActionActive(e.detail.keyCode)) {
       //console.log("Клавиша " + code + " нажата");
       //console.log(action);
-      move(action);
+      move(e.detail.action);
     } else {
       //console.log("Клавиша " + code + " НЕ нажата");
       clearInterval(timer); //TODO: вызов clearInterval даже при быстром нажатии и отжатии клавиши

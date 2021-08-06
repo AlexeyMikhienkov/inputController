@@ -94,8 +94,7 @@ export default class InputController {
 
   isActionActive(action) {
     if (!this.enabled) {
-      const [actionKey, actionValue] = Object.entries(this.actions).find(([key, value]) => (key === action)) || [];
-
+      const [actionKey, actionValue] = Object.entries(this.actions).find(([key, value]) => (key === action)) || []; //TODO: ?????
       console.log("Контроллер отключен");
       return false;
     }
@@ -105,22 +104,38 @@ export default class InputController {
   };
 
   isKeyPressed(keyCode) {
+    return keyCode === this.keydown;
+  }
+
+
+
+  /*
+  isKeyPressed(keyCode) {
     let res = false;
-    if (!this.enabled || !this.focused) {
-      return false;
-    }
+
+    if (!this.enabled || !this.focused) return false;
+
+    const includes = Object.entries(this.actions).some(([key, value]) =>
+      value.keyCodes.includes(keyCode) && value.enabled && value.active);
+
+    if (!includes) return false;
 
     Object.entries(this.actions).forEach(([key, value]) => {
       if (value.keyCodes.includes(keyCode) && value.enabled && value.active) { //TODO: Добавить проверку на нажатие конкретного code из keyCodes
-        res = true;
+        for (const code of value.keyCodes) {
+          if (code === keyCode) {
+            res = true;
+          }
+        }
       }
     });
     return res; //TODO: Выбрать удобный метод из Some и Every
-
   };
+   */
 
   handleKeyDown = (e) => {
     const code = e.keyCode;
+    this.keydown = e.keyCode;
 
     if (!this.enabled || !this.focused) {
       console.log("Не активирован контроллер или не сфокусировано окно");
@@ -144,6 +159,7 @@ export default class InputController {
 
   handleKeyUp = (e) => {
     const code = e.keyCode;
+    this.keydown = null;
 
     if (!this.enabled || !this.focused) {
       Object.entries(this.actions).forEach(([key, value]) => {
