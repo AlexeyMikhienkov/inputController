@@ -61,8 +61,6 @@ document.addEventListener("input-controller:action-activated", activated);
 document.addEventListener("input-controller:action-deactivated", deactivated);
 
 function activated(e) {
-  //console.log("Метод activated", e);
-  //console.log(e.detail.keyCode, e.detail.action);
   const timer = setInterval(() => {
     console.log(e.detail.keyCode, e.detail.action);
     if (controller.isKeyPressed(e.detail.keyCode) && controller.isActionActive(e.detail.action)) {
@@ -70,15 +68,9 @@ function activated(e) {
 
       move(e.detail.action);
     } else {
-      //console.log("Клавиша " + action + " НЕ нажата");
-      console.log(timer);
-      console.log("actions", controller.actions);
       clearInterval(timer);
-      console.log("actions", controller.actions);
     }
   }, 1000);
-
-  //debugger
 }
 
 function move(key) {
@@ -96,7 +88,6 @@ function move(key) {
     index = colors.indexOf(target.style.backgroundColor);
     target.style.backgroundColor = colors[(index + 1) % colors.length];
   }
-
   target.style.transform = `translate(${posX}px, ${posY}px)`;
 }
 

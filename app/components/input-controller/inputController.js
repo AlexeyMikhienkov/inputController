@@ -35,7 +35,7 @@ export default class InputController {
         value["active"] = false;
         this.actions[key] = value;
       } else {
-        let [, actionValue] =  Object.entries(this.actions).find(([k, v]) => (k === key)) || [];
+        let [, actionValue] =  Object.entries(this.actions).find(([k,]) => (k === key)) || [];
         actionValue.keyCodes = actionValue.keyCodes.concat(value.keyCodes);
         actionValue.keyCodes = actionValue.keyCodes.sort();
       }
@@ -64,12 +64,11 @@ export default class InputController {
   attach(target, dontEnable) {
     if (!this.isAttached) {
       if (!dontEnable) {
+        document.addEventListener("keyup", this.handleKeyUp);
+        document.addEventListener("keydown", this.handleKeyDown);
         this.target = target;
         this.enabled = true;
         this.isAttached = true;
-
-        document.addEventListener("keyup", this.handleKeyUp);
-        document.addEventListener("keydown", this.handleKeyDown);
         console.log("Прикреплено к DOM-элементу");
       }
     } else {
@@ -81,11 +80,9 @@ export default class InputController {
     if (this.isAttached) {
       document.removeEventListener("keydown", this.handleKeyDown);
       document.removeEventListener("keyup", this.handleKeyUp);
-
       this.target = null;
       this.enabled = false;
       this.isAttached = false;
-
       console.log("Откреплено от DOM-элемента");
     } else {
       console.log("Уже было откреплено");
@@ -96,7 +93,6 @@ export default class InputController {
     if (!this.enabled) {
       const [, actionValue] = Object.entries(this.actions).find(([key, value]) => (key === action)) || [];
       actionValue.active = false;
-
       console.log("Контроллер отключен");
       return false;
     }
@@ -121,7 +117,6 @@ export default class InputController {
     }
 
     Object.entries(this.actions).forEach(([key, value]) => {
-      //console.log(code, value.keyCodes);
       if (value.keyCodes.includes(code)) {
         if (value.enabled && !value.active) {
           value.active = true;
@@ -136,6 +131,7 @@ export default class InputController {
   handleKeyUp = (e) => {
     const code = e.keyCode;
     const index = this.keydown.indexOf(e.keyCode);
+
     if (index > -1) {
       this.keydown.splice(index, 1);
     }
@@ -158,7 +154,6 @@ export default class InputController {
         this.create(key, code, false);
       }
     });
-
   };
 
   create(key, code, activated) {
@@ -183,4 +178,3 @@ export default class InputController {
 }
 
 window.InputController = InputController;
-
