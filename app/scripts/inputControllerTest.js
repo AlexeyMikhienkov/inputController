@@ -66,11 +66,15 @@ function activated(e) {
   const timer = setInterval(() => {
     console.log(e.detail.keyCode, e.detail.action);
     if (controller.isKeyPressed(e.detail.keyCode) && controller.isActionActive(e.detail.action)) {
-        move(e.detail.action);
+      console.log("Активно:", controller.isActionActive(e.detail.action));
+
+      move(e.detail.action);
     } else {
       //console.log("Клавиша " + action + " НЕ нажата");
       console.log(timer);
+      console.log("actions", controller.actions);
       clearInterval(timer);
+      console.log("actions", controller.actions);
     }
   }, 1000);
 

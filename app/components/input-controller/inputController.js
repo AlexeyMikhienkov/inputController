@@ -94,7 +94,8 @@ export default class InputController {
 
   isActionActive(action) {
     if (!this.enabled) {
-      const [, actionValue] = Object.entries(this.actions).find(([key, value]) => (key === action)) || []; //TODO: ?????
+      const [, actionValue] = Object.entries(this.actions).find(([key, value]) => (key === action)) || [];
+      actionValue.active = false;
 
       console.log("Контроллер отключен");
       return false;
