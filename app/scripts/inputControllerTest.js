@@ -62,10 +62,7 @@ document.addEventListener("input-controller:action-deactivated", deactivated);
 
 function activated(e) {
   const timer = setInterval(() => {
-    console.log("Проверка активности");
-    console.log(controller.isKeyPressed(e.detail.keyCode), controller.isActionActive(e.detail.action));
     if (controller.isKeyPressed(e.detail.keyCode) && controller.isActionActive(e.detail.action) && !controller.out) {
-      console.log("Активно:", controller.isActionActive(e.detail.action));
       move(e.detail.action);
     } else if (controller.pressedActions.includes(e.detail.keyCode)) {
         controller.disablePressed(e.detail.action, e.detail.keyCode);
@@ -77,7 +74,6 @@ function activated(e) {
 }
 
 function move(key) {
-  console.log("move:", key);
 
   if (key === "left") {
     posX -= step;

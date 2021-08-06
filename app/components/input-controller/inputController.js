@@ -136,7 +136,6 @@ export default class InputController {
 
     const [, disableValue] = Object.entries(this.actions).find(([key,]) => (key === actionName)) || [];
     disableValue.active = false;
-    console.log("Действие больше не активно");
   }
 
   handleKeyUp = (e) => {
